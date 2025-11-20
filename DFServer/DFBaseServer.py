@@ -102,15 +102,6 @@ class DFBaseServer():
         else:
             raise RuntimeError('Server was already started')
 
-    def showLevelSelection(self, level : int):
-        """
-        Shows the level selection screen.
-
-        level: the level to be shown.
-        """
-        currScreen = DFBaseServer.DFGenericScreens.prueba
-        self._showScreen(currScreen)
-
     def showIdle(self):
         """
         Shows the idle screen. No parameters.
@@ -131,6 +122,13 @@ class DFBaseServer():
             self._showScreen(currScreen)
             self._lastScreen = currScreen
         self._updateParam('countdownTimer',remainingSecs)
+
+    def showLevelSelection(self, level: int):
+        currScreen = DFBaseServer.DFGenericScreens.prueba
+        if currScreen != self._lastScreen:
+            self._showScreen(currScreen)
+            self._lastScreen = currScreen
+
     
     def _showScreen(self, screen : DFGenericScreens | DFType1Screens | DFType2Screens | DFType3Screens | DFType4Screens):
         """
