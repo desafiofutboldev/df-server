@@ -1,0 +1,12 @@
+recursive include DFServer/screens_generic *
+recursive include DFServer/static *
+recursive include DFServer/templates *
+
+include DFServer/DFServer.py
+include DFServer/DFBaseServer.py
+include DFServer/__init__.py
+
+exclude DFServer/screens_html/*
+exclude DFServer/test_t1.py
+exclude DFServer/test_t2.py
+exclude DFServer/test_t3.py

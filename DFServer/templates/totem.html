@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pantalla Totem</title>
+    <script src="../static/js/socket.io.min.js"></script>
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <script>
+        const socket = io('http://127.0.0.1:5000');
+        
+        $(document).ready(function() {
+            console.log('ready')
+            $('.screen').hide()
+            $('#idle').show()
+            $('.gameName').html(`{{ gameName }}`)
+            $('.gameUnit').html(`{{ gameUnit }}`)
+            $('.playingTitle').html(`{{ playingTitle }}`)
+
+            // Algunos títulos ocupan más espacio del permitido por el ancho de la pantalla con el font-size original.
+            // Esta función calcula la diferencia de ancho y ajusta el tamaño del título.
+            function adjustFontSize() {
+                const $gameName = $('.gameName'); // Select the gameName element
+                const $parent = $gameName.parent(); // Get the parent element of gameName
+                const parentWidth = $parent.width(); // Get the width of the parent container
+                let fontSize = parseInt($gameName.css('font-size')); // Get the current font size
+
+                // Reset font size to the original value
+                $gameName.css('font-size', '130px'); // Set to initial value
+
+                fontSizeUpdated = false
+
+                // Check if text overflows and decrease font size if necessary
+                while ($gameName[0].scrollWidth > parentWidth && fontSize > 10) { // Prevent going below a certain font size
+                    fontSizeUpdated = true
+                    fontSize--; // Decrease font size
+                    $gameName.css('font-size', fontSize + 'px'); // Apply new font size
+                }
+
+                if(fontSizeUpdated) {
+                    fontSize-=3;
+                    $gameName.css('font-size', fontSize + 'px'); // Apply new font size
+                }
+            }
+
+            adjustFontSize(); // Initial call to adjust font size
+        });
+
+        socket.on('changeScreen', function(data) {
+            console.log('changeScreen',data.screenId)
+            $('.screen').hide()
+            $('#' + data.screenId).show()
+        });
+
+        socket.on('updateParam', function(data) {
+            console.log('updateParam',data.paramValue)
+            $('.' + data.paramClass).html(data.paramValue)
+        })
+
+    </script>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body style="width: 1024px; height: 600px;">
+    {{screensContent | safe}}
+</body>
+</html>
