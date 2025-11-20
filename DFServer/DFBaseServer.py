@@ -76,7 +76,7 @@ class DFBaseServer():
         self.__serverRunning = False
 
         dir = path.join(path.dirname(path.abspath(__file__)),'screens_generic')
-        with open(path.join(dir,'screens_generic.html'),'r') as f:
+        with open(path.join(dir,'screens_generic','screens_generic.html'),'r') as f:
             self.__screens_content = f.read()
         with open(path.join(dir,f'screens_{clientType.value}.html'), 'r') as f:
             self.__screens_content += f.read()
