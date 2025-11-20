@@ -102,6 +102,15 @@ class DFBaseServer():
         else:
             raise RuntimeError('Server was already started')
 
+    def showLevelSelection(self, level : int):
+        """
+        Shows the level selection screen.
+
+        level: the level to be shown.
+        """
+        currScreen = DFBaseServer.DFGenericScreens.prueba
+        self._showScreen(currScreen)
+
     def showIdle(self):
         """
         Shows the idle screen. No parameters.
