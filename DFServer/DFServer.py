@@ -85,7 +85,7 @@ class FuerzaServer(DFType3Server):
 class OctogonoServer(DFType3Server):
     def __init__(self, host = '127.0.0.1', port = 5000):
         super().__init__(
-            gameName = 'octógonosa',
+            gameName = 'octógono',
             gameUnit = 'puntos',
             lowTimeThr = 15,
             host = host,
