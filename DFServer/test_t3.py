@@ -2,9 +2,12 @@ from time import sleep, perf_counter
 from random import random
 from DFServer import *
 
-server = RampaServer()
+server = OctogonoServer()
 server.start()
 
+sleep(6)
+
+server.showLevelSelection(3) 
 sleep(6)
 
 for cd in range(3,0,-1):
