@@ -1,4 +1,4 @@
-<div id="idle" class="screen" style="width: 100%; height: 100%; position: relative; background: black">
+<div id="idle" class="screen" style="width: 100%; height: 100%; position: relative; background: black; display:none;">
     <div
         style="width: 928px; height: 10px; left: 48px; top: 48px; position: absolute; background: #E5E5E5; border: 3px #E5E5E5 solid">
     </div>
@@ -16,9 +16,8 @@
         </div>
     </div>
 </div>
-<div id="levelSelection" class="screen" style="width: 100%; height: 100%; position: relative; background: black">
+<div id="levelSelection" class="screen" style="width: 100%; height: 100%; position: relative; background: black;">
 
-    <!-- CONTENEDOR CENTRAL -->
     <div style="
         position: absolute;
         left: 50%;
@@ -32,7 +31,6 @@
         align-items: center;
     ">
 
-        <!-- Título -->
         <div style="
             text-align: center;
             color: #EDE173;
@@ -44,7 +42,6 @@
             SELECCIONAR NIVEL
         </div>
 
-        <!-- Botones sin onclick inline -->
         <button class="level-btn" data-level="1" style="
             width: 100%;
             padding: 28px 0;
@@ -85,23 +82,9 @@
         ">SUPERIOR</button>
 
     </div>
-
 </div>
-
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    const socket = io();
-
-    document.querySelectorAll('.level-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const level = parseInt(btn.getAttribute('data-level'));
-            console.log("Nivel seleccionado:", level);
-            socket.emit('levelSelected', level);
-        });
-    });
-</script>
-
-<div id="loading" class="screen" style="width: 100%; height: 100%; position: relative; background: black">
+<div id="loading" class="screen"
+    style="width: 100%; height: 100%; position: relative; background: black; display:none;">
     <div
         style="width: 928px; height: 10px; left: 48px; top: 48px; position: absolute; background: #E5E5E5; border: 3px #E5E5E5 solid">
     </div>

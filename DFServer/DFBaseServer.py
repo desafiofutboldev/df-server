@@ -88,7 +88,7 @@ class DFBaseServer():
         self._selected_level = None
 
         # Registrar evento SocketIO para recibir nivel
-        @self._socketio.on('levelSelection')
+        @self._socketio.on('levelSelected')
         def _handle_level_selection(level):
             print(f'[Servidor] Nivel seleccionado: {level}')
             self._selected_level = int(level)

@@ -1,64 +1,78 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Pantalla Totem</title>
+
+    <!-- Socket.io + jQuery -->
     <script src="../static/js/socket.io.min.js"></script>
     <script src="../static/js/jquery-3.6.0.min.js"></script>
+
     <script>
+        // Socket declarado UNA SOLA VEZ aquí
         const socket = io('http://127.0.0.1:5000');
-        
-        $(document).ready(function() {
-            console.log('ready')
-            $('.screen').hide()
-            $('#idle').show()
-            $('.gameName').html(`{{ gameName }}`)
-            $('.gameUnit').html(`{{ gameUnit }}`)
-            $('.playingTitle').html(`{{ playingTitle }}`)
 
-            // Algunos títulos ocupan más espacio del permitido por el ancho de la pantalla con el font-size original.
-            // Esta función calcula la diferencia de ancho y ajusta el tamaño del título.
+        $(document).ready(function () {
+
+            console.log('ready');
+
+            // Pantalla inicial
+            $('.screen').hide();
+            $('#idle').show();
+
+            // Parámetros de Jinja
+            $('.gameName').html(`{{ gameName }}`);
+            $('.gameUnit').html(`{{ gameUnit }}`);
+            $('.playingTitle').html(`{{ playingTitle }}`);
+
+            /* Ajuste de font-size */
             function adjustFontSize() {
-                const $gameName = $('.gameName'); // Select the gameName element
-                const $parent = $gameName.parent(); // Get the parent element of gameName
-                const parentWidth = $parent.width(); // Get the width of the parent container
-                let fontSize = parseInt($gameName.css('font-size')); // Get the current font size
+                const $gameName = $('.gameName');
+                const $parent = $gameName.parent();
+                const parentWidth = $parent.width();
+                let fontSize = parseInt($gameName.css('font-size'));
 
-                // Reset font size to the original value
-                $gameName.css('font-size', '130px'); // Set to initial value
+                $gameName.css('font-size', '130px');
 
-                fontSizeUpdated = false
-
-                // Check if text overflows and decrease font size if necessary
-                while ($gameName[0].scrollWidth > parentWidth && fontSize > 10) { // Prevent going below a certain font size
-                    fontSizeUpdated = true
-                    fontSize--; // Decrease font size
-                    $gameName.css('font-size', fontSize + 'px'); // Apply new font size
-                }
-
-                if(fontSizeUpdated) {
-                    fontSize-=3;
-                    $gameName.css('font-size', fontSize + 'px'); // Apply new font size
+                while ($gameName[0].scrollWidth > parentWidth && fontSize > 10) {
+                    fontSize--;
+                    $gameName.css('font-size', fontSize + 'px');
                 }
             }
 
-            adjustFontSize(); // Initial call to adjust font size
+            adjustFontSize();
         });
 
-        socket.on('changeScreen', function(data) {
-            console.log('changeScreen',data.screenId)
-            $('.screen').hide()
-            $('#' + data.screenId).show()
+        // ===================================================
+        // LISTENER: Botones de nivel (delegado - funciona siempre)
+        // ===================================================
+        $(document).on('click', '.level-btn', function () {
+            const level = parseInt($(this).data('level'));
+            console.log("Nivel seleccionado:", level);
+            socket.emit('levelSelected', level);
         });
 
-        socket.on('updateParam', function(data) {
-            console.log('updateParam',data.paramValue)
-            $('.' + data.paramClass).html(data.paramValue)
-        })
+        // ===================================================
+        // Cambiar pantalla por Socket.io
+        // ===================================================
+        socket.on('changeScreen', function (data) {
+            console.log('changeScreen', data.screenId)
+            $('.screen').hide();
+            $('#' + data.screenId).show();
+        });
 
+        // Actualizar valores en pantalla
+        socket.on('updateParam', function (data) {
+            console.log('updateParam', data.paramValue)
+            $('.' + data.paramClass).html(data.paramValue);
+        });
     </script>
+
     <link rel="stylesheet" href="../static/styles.css">
 </head>
+
 <body style="width: 1024px; height: 600px;">
-    {{screensContent | safe}}
+    {{ screensContent | safe }}
 </body>
+
 </html>
