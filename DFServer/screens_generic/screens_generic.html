@@ -1,4 +1,3 @@
-<!-- IDLE -->
 <div id="idle" class="screen" style="width: 100%; height: 100%; position: relative; background: black">
     <div
         style="width: 928px; height: 10px; left: 48px; top: 48px; position: absolute; background: #E5E5E5; border: 3px #E5E5E5 solid">
@@ -17,28 +16,91 @@
         </div>
     </div>
 </div>
+<div id="levelSelection" class="screen" style="width: 100%; height: 100%; position: relative; background: black">
 
+    <!-- CONTENEDOR CENTRAL -->
+    <div style="
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 60%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    ">
 
-<!-- NUEVA PANTALLA: PRUEBA -->
-<div id="prueba" class="screen" style="width: 100%; height: 100%; position: relative; background: black">
-    <div
-        style="width: 928px; height: 10px; left: 48px; top: 48px; position: absolute; background: #E5E5E5; border: 3px #E5E5E5 solid">
-    </div>
-    <div
-        style="width: 928px; height: 10px; left: 48px; top: 552px; position: absolute; background: #E5E5E5; border: 3px #E5E5E5 solid">
-    </div>
-
-    <div
-        style="left: 51px; top: 200px; width: 922px; position: absolute; display: flex; justify-content: center; align-items: center;">
-        <div
-            style="text-align: center; color: #EDE173; font-size: 100px; font-family: Fugaz One; font-weight: 400; text-transform: uppercase;">
-            PRUEBA
+        <!-- Título -->
+        <div style="
+            text-align: center;
+            color: #EDE173;
+            padding: 8px 0;
+            font-size: 45px;
+            font-family: 'Fugaz One';
+            text-transform: uppercase;
+        ">
+            SELECCIONAR NIVEL
         </div>
+
+        <!-- Botones sin onclick inline -->
+        <button class="level-btn" data-level="1" style="
+            width: 100%;
+            padding: 28px 0;
+            font-size: 40px;
+            font-family: 'Fugaz One';
+            background: #333;
+            color: #EDE173;
+            border: 6px solid #EDE173;
+            border-radius: 18px;
+            cursor: pointer;
+            text-transform: uppercase;
+        ">INICIAL</button>
+
+        <button class="level-btn" data-level="2" style="
+            width: 100%;
+            padding: 35px 0;
+            font-size: 40px;
+            font-family: 'Fugaz One';
+            background: #333;
+            color: #EDE173;
+            border: 6px solid #EDE173;
+            border-radius: 18px;
+            cursor: pointer;
+            text-transform: uppercase;
+        ">INTERMEDIO</button>
+
+        <button class="level-btn" data-level="3" style="
+            width: 100%;
+            padding: 35px 0;
+            font-size: 40px;
+            font-family: 'Fugaz One';
+            background: #333;
+            color: #EDE173;
+            border: 6px solid #EDE173;
+            border-radius: 18px;
+            cursor: pointer;
+            text-transform: uppercase;
+        ">SUPERIOR</button>
+
     </div>
+
 </div>
 
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
 
-<!-- LOADING -->
+    document.querySelectorAll('.level-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const level = parseInt(btn.getAttribute('data-level'));
+            console.log("Nivel seleccionado:", level);
+            socket.emit('levelSelected', level);
+        });
+    });
+</script>
+
 <div id="loading" class="screen" style="width: 100%; height: 100%; position: relative; background: black">
     <div
         style="width: 928px; height: 10px; left: 48px; top: 48px; position: absolute; background: #E5E5E5; border: 3px #E5E5E5 solid">

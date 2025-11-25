@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-from threading import Thread
+from threading import Thread, Event
 from time import sleep
 from os import path
 from enum import Enum
@@ -16,7 +16,7 @@ class DFBaseServer():
     class DFGenericScreens(Enum):
         idle = 'idle'
         loading = 'loading'
-        prueba = 'prueba'
+        levelSelection = 'levelSelection'
 
     class DFType1Screens(Enum):
         playingP1 = 'playing-p1'
@@ -84,7 +84,16 @@ class DFBaseServer():
         @self.__app.route('/')
         def __renderTotem():
             return render_template('totem.html', screensContent = self.__screens_content, gameName = self.__gameName, gameUnit = gameUnit, playingTitle = playingTitle)
+        self._level_event = Event()
+        self._selected_level = None
 
+        # Registrar evento SocketIO para recibir nivel
+        @self._socketio.on('levelSelection')
+        def _handle_level_selection(level):
+            print(f'[Servidor] Nivel seleccionado: {level}')
+            self._selected_level = int(level)
+            self._level_event.set()
+            
     def __server(self):
         self._socketio.run(self.__app, self.__host, self.__port, use_reloader = False, allow_unsafe_werkzeug = True)
 
@@ -123,11 +132,17 @@ class DFBaseServer():
             self._lastScreen = currScreen
         self._updateParam('countdownTimer',remainingSecs)
 
-    def showLevelSelection(self, level: int):
-        currScreen = DFBaseServer.DFGenericScreens.prueba
+    def levelSelection(self) -> int:
+        self._level_event.clear()
+
+        currScreen = DFBaseServer.DFGenericScreens.levelSelection
         if currScreen != self._lastScreen:
             self._showScreen(currScreen)
             self._lastScreen = currScreen
+        print("[Servidor] Esperando selección de nivel...")
+        self._level_event.wait() 
+        print(f"[Servidor] Nivel recibido: {self._selected_level}")
+        return self._selected_level
 
     
     def _showScreen(self, screen : DFGenericScreens | DFType1Screens | DFType2Screens | DFType3Screens | DFType4Screens):

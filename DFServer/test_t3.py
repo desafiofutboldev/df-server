@@ -4,11 +4,11 @@ from DFServer import *
 
 server = OctogonoServer()
 server.start()
+sleep(10)
 
-sleep(6)
+nivel = server.levelSelection()  # Se detiene aquí hasta que el jugador elija
+print(f"Nivel elegido: {nivel}")
 
-server.showLevelSelection(3) 
-sleep(6)
 
 for cd in range(3,0,-1):
     server.showCountdown(cd)
