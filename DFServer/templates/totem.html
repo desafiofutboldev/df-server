@@ -24,23 +24,6 @@
             $('.gameName').html(`{{ gameName }}`);
             $('.gameUnit').html(`{{ gameUnit }}`);
             $('.playingTitle').html(`{{ playingTitle }}`);
-
-            /* Ajuste de font-size */
-            function adjustFontSize() {
-                const $gameName = $('.gameName');
-                const $parent = $gameName.parent();
-                const parentWidth = $parent.width();
-                let fontSize = parseInt($gameName.css('font-size'));
-
-                $gameName.css('font-size', '130px');
-
-                while ($gameName[0].scrollWidth > parentWidth && fontSize > 10) {
-                    fontSize--;
-                    $gameName.css('font-size', fontSize + 'px');
-                }
-            }
-
-            adjustFontSize();
         });
 
         // ===================================================
