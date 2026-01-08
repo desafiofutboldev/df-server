@@ -58,7 +58,7 @@ class DFBaseServer():
 
         with open(fileName, "a") as f:
             f.write(f"Finalizacion: {now}\n") 
-            f.write("----------------------------")
+            f.write("----------------------------\n")
         
     def __init__(
             self, 
