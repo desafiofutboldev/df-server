@@ -187,6 +187,9 @@ class DFType3Server(DFBaseServer):
         """
         Shows the active game screen. This function accepts both 'only score' or 'only remaining time' calls, but doesn't update the screen (only data) unless a valid 'remainingSecs' is provided.
         """
+        print("Started")
+        sleep(5)
+        
         if -1 < remainingSecs <= self.__lowTimeThr:
             currScreen = DFBaseServer.DFType3Screens.playingLowTime
             self._showScreen(currScreen)
@@ -219,6 +222,8 @@ class DFType3Server(DFBaseServer):
         self._showScreen(currScreen)
         self._updateParam('finalScore',f'{finalScore} {self._gameUnit}')
         self._updateParam('recordScore',f'récord: {recordScore} {self._gameUnit}')
+        print("Finish")
+        sleep(5)
 
 class DFType4Server(DFBaseServer):
     """
