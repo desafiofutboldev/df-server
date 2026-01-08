@@ -49,7 +49,7 @@ class DFBaseServer():
         now = datetime.now().strftime("%H:%M:%S")
 
         with open("log.txt", "a") as f:
-            f.write(f"Dia: {actual}")
+            f.write(f"Dia: {actual}\n")
             f.write(f"Inicio: {now}\n") 
 
     def closeLog(self):
