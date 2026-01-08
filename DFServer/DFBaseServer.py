@@ -45,18 +45,20 @@ class DFBaseServer():
         
 
     def openLog(self):
-        fileName = f"{date.today().isoformat()}.txt"
+        date = date.today().isoformat()
         now = datetime.now().strftime("%H:%M:%S")
 
-        with open(fileName, "a") as f:
+        with open("log.txt", "a") as f:
+            f.write(f"Dia: {date}")
             f.write(f"Inicio: {now}\n") 
 
     def closeLog(self):
-        fileName = f"{date.today().isoformat()}.txt"
+        fileName = "log.txt"
         now = datetime.now().strftime("%H:%M:%S")
 
         with open(fileName, "a") as f:
             f.write(f"Finalizacion: {now}\n") 
+            f.write("----------------------------")
         
     def __init__(
             self, 
