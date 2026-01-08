@@ -4,6 +4,8 @@ from threading import Thread, Event
 from time import sleep
 from os import path
 from enum import Enum
+from datetime import datetime, date    
+
 
 class DFBaseServer():
 
@@ -40,7 +42,22 @@ class DFBaseServer():
         playing = 'playing'
         finishedNormal = 'finished-normal'
         finishedRecord = 'finished-record'
+        
 
+    def openLog(self):
+        fileName = f"{date.today().isoformat()}.txt"
+        now = datetime.now().strftime("%H:%M:%S")
+
+        with open(fileName, "a") as f:
+            f.write("Inicio: {now}\n") 
+
+    def closeLog(self):
+        fileName = f"{date.today().isoformat()}.txt"
+        now = datetime.now().strftime("%H:%M:%S")
+
+        with open(fileName, "a") as f:
+            f.write("Finalizacion: {now}\n") 
+        
     def __init__(
             self, 
             clientType : DFBaseServerType, 
@@ -187,9 +204,7 @@ class DFType3Server(DFBaseServer):
         """
         Shows the active game screen. This function accepts both 'only score' or 'only remaining time' calls, but doesn't update the screen (only data) unless a valid 'remainingSecs' is provided.
         """
-        print("Started")
-        sleep(5)
-        
+
         if -1 < remainingSecs <= self.__lowTimeThr:
             currScreen = DFBaseServer.DFType3Screens.playingLowTime
             self._showScreen(currScreen)
@@ -222,8 +237,6 @@ class DFType3Server(DFBaseServer):
         self._showScreen(currScreen)
         self._updateParam('finalScore',f'{finalScore} {self._gameUnit}')
         self._updateParam('recordScore',f'récord: {recordScore} {self._gameUnit}')
-        print("Finish")
-        sleep(5)
 
 class DFType4Server(DFBaseServer):
     """
