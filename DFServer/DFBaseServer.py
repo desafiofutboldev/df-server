@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from threading import Thread, Event
 from time import sleep
 from os import path
+import os
 from enum import Enum
 from datetime import datetime, date    
 
@@ -47,16 +48,20 @@ class DFBaseServer():
     def openLog(self):
         actual = date.today().isoformat()
         now = datetime.now().strftime("%H:%M:%S")
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        config_path = os.path.join(base_dir, "log.txt")
 
-        with open("log.txt", "a") as f:
+        with open(config_path, "a") as f:
             f.write(f"Dia: {actual}\n")
             f.write(f"Inicio: {now}\n") 
 
     def closeLog(self):
-        fileName = "log.txt"
         now = datetime.now().strftime("%H:%M:%S")
 
-        with open(fileName, "a") as f:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        config_path = os.path.join(base_dir, "log.txt")
+
+        with open(config_path, "a") as f:
             f.write(f"Finalizacion: {now}\n") 
             f.write("----------------------------\n")
         
