@@ -18,8 +18,10 @@ class DFBaseServer():
 
     class DFGenericScreens(Enum):
         idle = 'idle'
+        demoIdle = 'demoIdle'
         loading = 'loading'
         levelSelection = 'levelSelection'
+        gameInoperative = 'gameInoperative'
 
     class DFType1Screens(Enum):
         playingP1 = 'playing-p1'
@@ -100,9 +102,9 @@ class DFBaseServer():
         self.__serverRunning = False
 
         dir = path.join(path.dirname(path.abspath(__file__)),'screens_generic')
-        with open(path.join(dir, 'screens_generic.html'),'r') as f:
+        with open(path.join(dir, 'screens_generic.html'),'r', encoding='utf-8') as f:
             self.__screens_content = f.read()
-        with open(path.join(dir,f'screens_{clientType.value}.html'), 'r') as f:
+        with open(path.join(dir,f'screens_{clientType.value}.html'), 'r', encoding='utf-8') as f:
             self.__screens_content += f.read()
 
         @self.__app.route('/')
@@ -117,7 +119,13 @@ class DFBaseServer():
             print(f'[Servidor] Nivel seleccionado: {level}')
             self._selected_level = int(level)
             self._level_event.set()
-            
+
+        # Al conectarse un cliente, se le informa la pantalla actual (evita que se quede en 'idle' si se conecta/recarga después de un cambio de pantalla)
+        @self._socketio.on('connect')
+        def _handle_connect():
+            if hasattr(self, '_lastScreen'):
+                self._socketio.emit('changeScreen', {'screenId': self._lastScreen.value})
+
     def __server(self):
         self._socketio.run(self.__app, self.__host, self.__port, use_reloader = False, allow_unsafe_werkzeug = True)
 
@@ -140,6 +148,24 @@ class DFBaseServer():
         Shows the idle screen. No parameters.
         """
         currScreen = DFBaseServer.DFGenericScreens.idle
+        if currScreen != self._lastScreen:
+            self._showScreen(currScreen)
+            self._lastScreen = currScreen
+
+    def showDemoIdle(self):
+        """
+        Shows the demo mode idle screen. No parameters.
+        """
+        currScreen = DFBaseServer.DFGenericScreens.demoIdle
+        if currScreen != self._lastScreen:
+            self._showScreen(currScreen)
+            self._lastScreen = currScreen
+
+    def showGameInoperative(self):
+        """
+        Shows the game inoperative (no connectivity / needs support) screen. No parameters.
+        """
+        currScreen = DFBaseServer.DFGenericScreens.gameInoperative
         if currScreen != self._lastScreen:
             self._showScreen(currScreen)
             self._lastScreen = currScreen
