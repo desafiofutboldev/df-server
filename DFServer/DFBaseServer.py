@@ -119,7 +119,13 @@ class DFBaseServer():
             print(f'[Servidor] Nivel seleccionado: {level}')
             self._selected_level = int(level)
             self._level_event.set()
-            
+
+        # Al conectarse un cliente, se le informa la pantalla actual (evita que se quede en 'idle' si se conecta/recarga después de un cambio de pantalla)
+        @self._socketio.on('connect')
+        def _handle_connect():
+            if hasattr(self, '_lastScreen'):
+                self._socketio.emit('changeScreen', {'screenId': self._lastScreen.value})
+
     def __server(self):
         self._socketio.run(self.__app, self.__host, self.__port, use_reloader = False, allow_unsafe_werkzeug = True)
 
