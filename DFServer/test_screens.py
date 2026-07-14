@@ -1,7 +1,8 @@
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from time import sleep
 from DFServer import ReaccionServer
-
-#python -m DFServer.test_screens
 
 server = ReaccionServer()
 server.start()
