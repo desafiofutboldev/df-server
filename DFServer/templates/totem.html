@@ -37,6 +37,60 @@
         });
 
         // ===================================================
+        // LISTENER: Botón de cambio de modo (pantalla idle) -> pide clave
+        // ===================================================
+        const CALIBRATION_CODE = '8947';
+
+        function openModeModal() {
+            $('#modeModalInput').val('');
+            $('#modeModalError').css('visibility', 'hidden');
+            $('#modeModal').css('display', 'flex');
+            $('#modeModalInput').focus();
+        }
+
+        function closeModeModal() {
+            $('#modeModal').css('display', 'none');
+        }
+
+        function submitModeModal() {
+            const code = $('#modeModalInput').val().trim();
+            if (code === CALIBRATION_CODE) {
+                closeModeModal();
+                socket.emit('calibrationRequested');
+            } else {
+                $('#modeModalError').css('visibility', 'visible');
+                $('#modeModalInput').val('').focus();
+            }
+        }
+
+        $(document).on('click', '.mode-toggle-btn', function () {
+            openModeModal();
+        });
+
+        // ===================================================
+        // LISTENER: Botón de modo en la pantalla de calibración -> vuelve a idle sin clave
+        // ===================================================
+        $(document).on('click', '.mode-exit-btn', function () {
+            socket.emit('calibrationExitRequested');
+        });
+
+        $(document).on('click', '#modeModalCancel, #modeModalBackdrop', function () {
+            closeModeModal();
+        });
+
+        $(document).on('click', '#modeModalConfirm', function () {
+            submitModeModal();
+        });
+
+        $(document).on('keydown', '#modeModalInput', function (e) {
+            if (e.key === 'Enter') {
+                submitModeModal();
+            } else if (e.key === 'Escape') {
+                closeModeModal();
+            }
+        });
+
+        // ===================================================
         // Cambiar pantalla por Socket.io
         // ===================================================
         socket.on('changeScreen', function (data) {
@@ -57,6 +111,95 @@
 
 <body style="width: 1008px; height: 748px;">
     {{ screensContent | safe }}
+
+    <div id="modeModal" style="
+        display: none;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    ">
+        <div id="modeModalBackdrop" style="
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+        "></div>
+
+        <div style="
+            position: relative;
+            width: 360px;
+            padding: 40px 32px;
+            background: #1A1A1A;
+            border: 2px solid #EDE173;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        ">
+            <div style="
+                color: #EDE173;
+                font-family: 'Fugaz One';
+                font-size: 26px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                text-align: center;
+            ">ingresá la clave</div>
+
+            <input id="modeModalInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" style="
+                width: 100%;
+                box-sizing: border-box;
+                padding: 12px 16px;
+                font-size: 22px;
+                font-family: 'Fugaz One';
+                letter-spacing: 6px;
+                text-align: center;
+                color: #E5E5E5;
+                background: #2A2A2A;
+                border: 2px solid #4A4F55;
+                border-radius: 10px;
+                outline: none;
+            " />
+
+            <div id="modeModalError" style="
+                visibility: hidden;
+                color: #E05252;
+                font-family: 'Fugaz One';
+                font-size: 16px;
+                text-transform: uppercase;
+            ">clave incorrecta</div>
+
+            <div style="display: flex; gap: 16px; width: 100%;">
+                <button id="modeModalCancel" type="button" style="
+                    flex: 1;
+                    padding: 12px 0;
+                    background: transparent;
+                    color: #AFB6BD;
+                    font-family: 'Fugaz One';
+                    font-size: 18px;
+                    text-transform: uppercase;
+                    border: 2px solid #4A4F55;
+                    border-radius: 999px;
+                    cursor: pointer;
+                ">cancelar</button>
+                <button id="modeModalConfirm" type="button" style="
+                    flex: 1;
+                    padding: 12px 0;
+                    background: #EDE173;
+                    color: #1A1A1A;
+                    font-family: 'Fugaz One';
+                    font-size: 18px;
+                    text-transform: uppercase;
+                    border: none;
+                    border-radius: 999px;
+                    cursor: pointer;
+                ">confirmar</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
