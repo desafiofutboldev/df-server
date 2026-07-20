@@ -22,6 +22,7 @@ class DFBaseServer():
         loading = 'loading'
         levelSelection = 'levelSelection'
         gameInoperative = 'gameInoperative'
+        calibracion = 'calibracion'
 
     class DFType1Screens(Enum):
         playingP1 = 'playing-p1'
@@ -120,11 +121,30 @@ class DFBaseServer():
             self._selected_level = int(level)
             self._level_event.set()
 
+        # Registrar evento SocketIO para pedido de calibración (botón 'modo' con clave validada en el cliente)
+        @self._socketio.on('calibrationRequested')
+        def _handle_calibration_requested():
+            print('[Servidor] Calibración solicitada')
+            self.showCalibration()
+
+        # Registrar evento SocketIO para salir de calibración (botón 'modo' en esa pantalla, sin clave)
+        @self._socketio.on('calibrationExitRequested')
+        def _handle_calibration_exit_requested():
+            print('[Servidor] Salida de calibración solicitada')
+            self.showIdle()
+
         # Al conectarse un cliente, se le informa la pantalla actual (evita que se quede en 'idle' si se conecta/recarga después de un cambio de pantalla)
         @self._socketio.on('connect')
         def _handle_connect():
             if hasattr(self, '_lastScreen'):
                 self._socketio.emit('changeScreen', {'screenId': self._lastScreen.value})
+
+    @property
+    def currentScreen(self):
+        """
+        The screen currently being shown to the client (a DFGenericScreens or DFType<N>Screens member).
+        """
+        return self._lastScreen
 
     def __server(self):
         self._socketio.run(self.__app, self.__host, self.__port, use_reloader = False, allow_unsafe_werkzeug = True)
@@ -157,6 +177,15 @@ class DFBaseServer():
         Shows the demo mode idle screen. No parameters.
         """
         currScreen = DFBaseServer.DFGenericScreens.demoIdle
+        if currScreen != self._lastScreen:
+            self._showScreen(currScreen)
+            self._lastScreen = currScreen
+
+    def showCalibration(self):
+        """
+        Shows the calibration screen (accessed via the 'modo' button on the idle screen). No parameters.
+        """
+        currScreen = DFBaseServer.DFGenericScreens.calibracion
         if currScreen != self._lastScreen:
             self._showScreen(currScreen)
             self._lastScreen = currScreen
